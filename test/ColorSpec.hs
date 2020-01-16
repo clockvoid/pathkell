@@ -51,3 +51,7 @@ spec = do
   describe "color" $
     it "大きさ" $
       (Vec.length color1) `shouldBe` (sqrt 3)
+
+  describe "color" $
+    it "background" $
+      background `shouldBe` color 0 0 0
