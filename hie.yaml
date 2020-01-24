@@ -4,5 +4,5 @@ cradle:
       component: "pathkell:test:pathkell-test"
     - path: ./src
       component: "pathkell:lib"
-    - path: ./app
+    - path: ./app/Main.hs
       component: "pathkell:exe:pathkell-exe"
