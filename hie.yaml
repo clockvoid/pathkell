@@ -1,0 +1,8 @@
+cradle:
+  stack:
+    - path: ./test
+      component: "pathkell:test:pathkell-test"
+    - path: ./src
+      component: "pathkell:lib"
+    - path: ./app
+      component: "pathkell:exe:pathkell-exe"
