@@ -46,11 +46,11 @@ spec = do
 
   describe "color" $
     it "大きさの二乗" $
-      (lenSquared color1) `shouldBe` 3
+      lenSquared color1 `shouldBe` 3
 
   describe "color" $
     it "大きさ" $
-      (Vec.length color1) `shouldBe` (sqrt 3)
+      Vec.length color1 `shouldBe` sqrt 3
 
   describe "color" $
     it "background" $
