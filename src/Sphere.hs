@@ -9,7 +9,7 @@ import Object
 eps :: Double
 eps = 0.0000001
 
-data Sphere = Sphere Double Vec3 Color Color ReflectionType
+data Sphere = Sphere Double Vec3 Color Color ReflectionType deriving Show
 
 sphere :: Double -> Vec3 -> Color -> Color -> ReflectionType -> Sphere
 sphere = Sphere
@@ -34,6 +34,6 @@ instance Object Sphere where
     where
       o_p = position sphere - org ray
       b = o_p `dot` dir ray
-      det = b * b - o_p `dot` o_p + radius sphere * radius sphere
+      det = b * b - (o_p `dot` o_p) + radius sphere * radius sphere
       t1 = b - sqrt det
       t2 = b + sqrt det

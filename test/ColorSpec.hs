@@ -5,53 +5,28 @@ import Color
 import Vec
 
 color1 :: Color
-color1 = color 1 1 1
+color1 = color 1.0 1.0 1.0
 
 color2 :: Color
-color2 = color 2 2 2
+color2 = color 0.5 0.3 0.08
+
+vec1 :: Vec3
+vec1 = vec3 1 2 3
 
 spec :: Spec
 spec = do
   describe "color" $
-    it "+" $
-      (color1 + color2) `shouldBe` color 3 3 3
+    it "255" $
+      clamp color1 `shouldBe` (255, 255, 255)
 
   describe "color" $
-    it "-" $
-      (color2 - color1) `shouldBe` color 1 1 1
+    it "floating" $
+      clamp color2 `shouldBe` (127, 76, 20)
+      
+  describe "color" $
+    it "255 string" $
+      clampToString color1 `shouldBe` "255 255 255"
 
   describe "color" $
-    it "*" $
-      (color1 * color2) `shouldBe` color 2 2 2
-
-  describe "color" $
-    it "左からの拡大" $
-      (3 |* color1) `shouldBe` color 3 3 3
-
-  describe "color" $
-    it "右からの拡大" $
-      (color1 *| 3) `shouldBe` color 3 3 3
-
-  describe "color" $
-    it "右からの縮小" $
-      (color2 /| 2) `shouldBe` color 1 1 1
-  
-  describe "color" $
-    it "ドット積" $
-      (color1 `dot` color2) `shouldBe` 6
-
-  describe "color" $
-    it "クロス積" $
-      (color1 `cross` color2) `shouldBe` color 0 0 0
-
-  describe "color" $
-    it "大きさの二乗" $
-      lenSquared color1 `shouldBe` 3
-
-  describe "color" $
-    it "大きさ" $
-      Vec.length color1 `shouldBe` sqrt 3
-
-  describe "color" $
-    it "background" $
-      background `shouldBe` color 0 0 0
+    it "fromVec3" $
+      fromVec3 vec1 `shouldBe` color 1 2 3

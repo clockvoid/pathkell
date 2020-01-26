@@ -15,10 +15,10 @@ position1 :: Vec3
 position1 = vec3 10 0 0
 
 emission1 :: Color
-emission1 = vec3 0 0 0
+emission1 = color 0 0 0
 
 sphereColor1 :: Color
-sphereColor1 = vec3 0 0 0
+sphereColor1 = color 0 0 0
 
 reflectionType1 :: ReflectionType
 reflectionType1 = DIFFUSE
