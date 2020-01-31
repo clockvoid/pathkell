@@ -9,5 +9,12 @@ Haskell製のパストレーサを目指してます．
 目標としては画像配列の管理にState Modadを使用し，それ以外では純粋関数のみ使用して実装したい．
 多分一番の難関は乱数の生成部分．（これはHLSでもとても悩ましかった）
 
+## Bibliography
+- 参考にしたプログラム
+    - https://github.com/githole/simple-pathtracer/blob/simple-pathtracer-norecursion/simplept.cpp
+- 参考にしたサイト
+    - http://e-tipsmemo.hatenablog.com/entry/2018/01/24/000000
+    - https://qiita.com/mebiusbox2/items/89e2db3b24e4c39502fe
+
 ## License
 BSD3
