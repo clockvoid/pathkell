@@ -39,3 +39,9 @@ vec3 = Vec3
 
 instance Show Vec3 where
   show (Vec3 x y z) = show x ++ " " ++ show y ++ " " ++ show z ++ "\n"
+
+radians :: Double -> Double
+radians deg = deg / 180 * pi
+
+degrees :: Double -> Double
+degrees rad = rad / pi * 180

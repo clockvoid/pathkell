@@ -11,7 +11,7 @@ camera m_origin m_u m_v m_w = Camera m_origin (m_u, m_v, m_w)
 cameraFromLookAt :: Vec3 -> Vec3 -> Vec3 -> Double -> Double -> Camera
 cameraFromLookAt lookfrom lookat vup vfov aspect = camera m_origin (2 * halfW |* u) (2 * halfH |* v) (m_origin - halfW |* u - halfH |* v - w)
   where
-    halfH = tan vfov / 2.0
+    halfH = tan (radians vfov) / 2.0
     halfW = aspect * halfH
     m_origin = vec3 0 0 0
     w = normalize $ lookfrom - lookat
