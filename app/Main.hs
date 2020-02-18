@@ -6,15 +6,16 @@ import Vec
 import Sphere
 import Ray
 import ReflectionType
+import Camera
 
-camera :: Vec3
-camera = vec3 0 0 0
+camera1 :: Camera
+camera1 = camera (vec3 0 0 0) (vec3 1 0 0) (vec3 0 1 0) (vec3 0 0 1)
 
 screen :: [Vec3]
-screen = [vec3 5 (y * (15 / 128)) (z * (15 / 128)) | y <- [-127..128], z <- [-127..128]]
+screen = [vec3 0 (y / 256) (z / 256) | y <- [0..256], z <- [0..256]]
 
 rays :: [Ray]
-rays = map (Ray camera . normalize) screen
+rays = map (\(Vec3 x y z) -> getRay y z camera1) screen
 
 radius1 :: Double
 radius1 = 10
@@ -48,8 +49,14 @@ isHit = map hit ts
   where
     hit t = if t == 0 then vec3 0 0 0 else vec3 1 1 1
 
+transformColor :: Ray -> Color
+transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 1 1)
+  where
+    d = normalize dir 
+    t = 0.5 * vecY dir + 1
+
 main :: IO ()
 main = 
-  print $ map (clampToString . fromVec3 . normalize . (\vec -> vec - position1)) hitpoints
+  print $ map (clampToString . transformColor) rays
   --print $ map (clampToString . fromVec3) isHit
 

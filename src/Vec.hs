@@ -11,6 +11,7 @@ class Vec a where
   normalize :: a -> a
   vmap :: (Double -> Double) -> a -> a
   vpromote :: Double -> a
+  lerp :: Double -> a -> a -> a
 
 data Vec3 = Vec3 Double Double Double deriving (Eq)
 
@@ -33,9 +34,19 @@ instance Vec Vec3 where
   normalize vec = vec /| Vec.length vec
   vmap f (Vec3 x y z) = Vec3 (f x) (f y) (f z)
   vpromote a = Vec3 a a a
+  lerp alpha v1 v2 = (v2 - v1) *| alpha + v1
 
 vec3 :: Double -> Double -> Double -> Vec3
 vec3 = Vec3
+
+vecX :: Vec3 -> Double
+vecX (Vec3 x _ _) = x
+
+vecY :: Vec3 -> Double
+vecY (Vec3 _ y _) = y
+
+vecZ :: Vec3 -> Double
+vecZ (Vec3 _ _ z) = z
 
 instance Show Vec3 where
   show (Vec3 x y z) = show x ++ " " ++ show y ++ " " ++ show z ++ "\n"
