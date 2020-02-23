@@ -34,7 +34,7 @@ instance Vec Vec3 where
   normalize vec = vec /| Vec.length vec
   vmap f (Vec3 x y z) = Vec3 (f x) (f y) (f z)
   vpromote a = Vec3 a a a
-  lerp alpha v1 v2 = (v2 - v1) *| alpha + v1
+  lerp alpha v1 v2 = ((v2 - v1) *| alpha) + v1
 
 vec3 :: Double -> Double -> Double -> Vec3
 vec3 = Vec3

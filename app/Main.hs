@@ -9,7 +9,7 @@ import ReflectionType
 import Camera
 
 camera1 :: Camera
-camera1 = camera (vec3 0 0 0) (vec3 1 0 0) (vec3 0 1 0) (vec3 0 0 1)
+camera1 = camera (vec3 0 0 0) (vec3 4 0 0) (vec3 0 2 0) (vec3 (-2) (-1) (-1))
 
 screen :: [Vec3]
 screen = [vec3 0 (y / 256) (z / 256) | y <- [0..256], z <- [0..256]]
@@ -53,7 +53,7 @@ transformColor :: Ray -> Color
 transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 1 1)
   where
     d = normalize dir 
-    t = 0.5 * vecY dir + 1
+    t = 0.5 * (vecY dir + 1)
 
 main :: IO ()
 main = 
