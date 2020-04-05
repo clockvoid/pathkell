@@ -12,7 +12,7 @@ camera1 :: Camera
 camera1 = camera (vec3 0 0 0) (vec3 4 0 0) (vec3 0 2 0) (vec3 (-2) (-1) (-1))
 
 screen :: [Vec3]
-screen = [vec3 0 (y / 256) (z / 256) | y <- [0..256], z <- [0..256]]
+screen = [vec3 0 (y / 100) (z / 200) | y <- [0..200], z <- [0..100]]
 
 rays :: [Ray]
 rays = map (\(Vec3 x y z) -> getRay y z camera1) screen
@@ -50,7 +50,7 @@ isHit = map hit ts
     hit t = if t == 0 then vec3 0 0 0 else vec3 1 1 1
 
 transformColor :: Ray -> Color
-transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 1 1)
+transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 0 0)
   where
     d = normalize dir 
     t = 0.5 * (vecY dir + 1)
