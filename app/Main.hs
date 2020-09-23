@@ -1,62 +1,45 @@
 module Main where
 
-import Object
-import Color
-import Vec
-import Sphere
-import Ray
-import ReflectionType
-import Camera
+import Text.Printf
+import Control.Monad
 
-camera1 :: Camera
-camera1 = camera (vec3 0 0 0) (vec3 4 0 0) (vec3 0 2 0) (vec3 (-2) (-1) (-1))
+height :: Float
+height = 256
 
-screen :: [Vec3]
-screen = [vec3 0 (y / 100) (z / 200) | y <- [0..200], z <- [0..100]]
+width :: Float
+width = 256
 
-rays :: [Ray]
-rays = map (\(Vec3 x y z) -> getRay y z camera1) screen
+eye = (0, 0, 5)
+sphere = (0, 0, 0)
+radius = 1
 
-radius1 :: Double
-radius1 = 10
-
-position1 :: Vec3
-position1 = vec3 10 0 0
-
-emission1 :: Color
-emission1 = color 0 0 0
-
-sphereColor1 :: Color
-sphereColor1 = color 1 1 1
-
-reflectionType1 :: ReflectionType
-reflectionType1 = DIFFUSE
-
-sphere1 :: Sphere
-sphere1 = sphere radius1 position1 emission1 sphereColor1 reflectionType1
-
-ts :: [Double]
-ts = [sphere1 `intersect` ray | ray <- rays]
-
-hitpoints :: [Vec3]
-hitpoints = zipWith hited rays ts
+intersectRaySphere :: (Float, Float, Float) -> (Float, Float, Float) -> (Float, Float, Float) -> Float -> Bool
+intersectRaySphere (ox, oy, oz) (dx, dy, dz) (cx, cy, cz) r = 0 <= (b * b - 4 * a * c)
   where
-    hited ray t = if t == 0 then vec3 0 0 0 else hit ray t
-    hit ray t = org ray + t |* dir ray
+   a = dx * dx + dy * dy + dz * dz
+   b = 2 * (dx * (ox - cx) + dy * (oy - cy) + dz * (oz - cz))
+   c = (ox - cx) ** 2 + (oy - cy) ** 2 + (oz - cz) ** 2 - r ** 2
 
-isHit :: [Vec3]
-isHit = map hit ts
-  where
-    hit t = if t == 0 then vec3 0 0 0 else vec3 1 1 1
+calcPixelColor :: (Float, Float) -> (Int, Int, Int)
+-- calcPixelColor(x, y) = (round (abs (x + 0.5 - width / 2)), round (abs (y + 0.5 - height / 2)), 0)
+calcPixelColor (x, y) = if intersectRaySphere eye ray sphere radius
+                        then
+                          (255, 255, 255)
+                        else
+                          (0, 0, 0)
+                          where
+                            ray = (x + 0.5 - width / 2, -(y + 0.5 - height / 2), -height)
 
-transformColor :: Ray -> Color
-transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 0 0)
-  where
-    d = normalize dir 
-    t = 0.5 * (vecY dir + 1)
+draw :: [(Int, Int, Int)]
+draw = map calcPixelColor [(x, y) | y <- [0..width - 1], x <- [0..height - 1]]
 
 main :: IO ()
-main = 
-  print $ map (clampToString . transformColor) rays
-  --print $ map (clampToString . fromVec3) isHit
+main = do
+  putStrLn "P3"
+  putStr "256"
+  putStr " "
+  putStrLn "256"
+  putStrLn "255"
+  forM_ draw $ \(r, g, b) -> do
+    printf "%d %d %d\n" r g b
 
