@@ -3,6 +3,7 @@ module Main where
 import Text.Printf
 import Control.Monad
 import Vec
+import Spectrum
 import Numeric.Limits
 
 height :: Int
@@ -17,14 +18,17 @@ eye = vec3 0 0 5
 sphere :: Vec3
 sphere = vec3 0 0 0
 
+diffuseColor :: Spectrum
+diffuseColor = Spectrum 1 0.5 0.25
+
 radius :: Double
 radius = 1
 
 lightPos :: Vec3
 lightPos = vec3 10 10 10
 
-lightPower :: Double
-lightPower = 4000
+lightPower :: Spectrum
+lightPower = Spectrum 4000 4000 4000
 
 not_hit :: Double
 not_hit = infinity
@@ -58,18 +62,17 @@ calcPixelColor :: (Int, Int) -> (Int, Int, Int)
 calcPixelColor dir = 
   if t == not_hit
      then (0, 0, 0)
-     else (i, i, i)
+     else toColor l
   where
     ray = calcPrimaryRay dir
     t = intersectRaySphere eye ray sphere radius
-    brightness = diffuseLighting eye ray sphere t
-    i = min (round (brightness * 255)) 255
+    l = diffuseLighting eye ray sphere t
 
-diffuseLighting :: Vec3 -> Vec3 -> Vec3 -> Double -> Double
+diffuseLighting :: Vec3 -> Vec3 -> Vec3 -> Double -> Spectrum
 diffuseLighting eye ray sphere t = 
   if dotNL > 0
-     then lightPower * dotNL / (4 * pi * r * r)
-     else 0
+     then lightPower *|| factor * diffuseColor
+     else black
   where
     p = eye + (t |* ray)
     n = normalize $ p - sphere
@@ -77,6 +80,7 @@ diffuseLighting eye ray sphere t =
     l = normalize v
     dotNL = n `dot` l
     r = Vec.length v
+    factor = dotNL / (4 * pi * r * r)
 
 draw :: [(Int, Int, Int)]
 draw = map calcPixelColor [(x, y) | y <- [0..width - 1], x <- [0..height - 1]]
