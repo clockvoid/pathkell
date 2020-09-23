@@ -7,8 +7,7 @@ import Spectrum
 import Numeric.Limits
 import Scene
 import Intersectable
-import Sphere
-import Plane
+import Object
 import Ray
 import Scene
 import Light

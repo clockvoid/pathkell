@@ -1,22 +1,22 @@
-module Sphere where
+module Object where
 
 import Vec
 import Ray
 import Material
 import Intersectable
 import Intersection
-import Plane
 
-center :: Object -> Vec3
-center (Sphere c _ _) = c
+data Object = Sphere Vec3 Double Material | Plane Vec3 Double Material deriving Show
 
-radius :: Object -> Double
-radius (Sphere _ r _) = r
+plane :: Vec3 -> Vec3 -> Material -> Object
+plane p n material = Plane (normalize n) d material
+  where
+    d = -p `dot` (normalize n)
 
 maxD :: Double -> Double -> Double
 maxD x y
-  | x <= 0                                = y
-  | True                                  = x
+  | x <= 0 = y
+  | True   = x
 
 instance Intersectable Object where
   intersect (Sphere sphereCenter sphereRadius material) ray

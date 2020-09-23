@@ -7,8 +7,7 @@ import Vec
 import Intersection
 import Spectrum
 import Material
-import Sphere
-import Plane
+import Object
 
 data Scene = Scene [Object] [Light] deriving Show
 
