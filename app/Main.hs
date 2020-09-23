@@ -14,10 +14,10 @@ import Light
 import Material
 
 height :: Int
-height = 256
+height = 1080
 
 width :: Int
-width = 256
+width = 1920
 
 intersectableList :: [Object]
 intersectableList = [
@@ -53,14 +53,14 @@ calcPixelColor dir = toColor l
     l = trace scene ray
 
 draw :: [(Int, Int, Int)]
-draw = map calcPixelColor [(x, y) | y <- [0..width - 1], x <- [0..height - 1]]
+draw = map calcPixelColor [(x, y) | y <- [0..height - 1], x <- [0..width - 1]]
 
 main :: IO ()
 main = do
   putStrLn "P3"
-  putStr "256"
+  putStr $ show width
   putStr " "
-  putStrLn "256"
+  putStrLn $ show height
   putStrLn "255"
   forM_ draw $ \(r, g, b) -> do
     printf "%d %d %d\n" r g b
