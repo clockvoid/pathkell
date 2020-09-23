@@ -1,6 +1,6 @@
 module Spectrum where
 
-data Spectrum = Spectrum Double Double Double
+data Spectrum = Spectrum Double Double Double deriving (Eq, Show)
 
 class SpectrumInterface a where
   (*||) :: a -> Double -> a

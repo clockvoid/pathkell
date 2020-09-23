@@ -29,5 +29,5 @@ spec = do
 
   describe "ray" $
     it "dir" $
-      dir ray1 `shouldBe` vec3 2 2 2
+      dir ray1 `shouldBe` nomalize $ vec3 2 2 2
 

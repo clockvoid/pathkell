@@ -1,39 +1,45 @@
 module Sphere where
 
 import Vec
-import Color
-import ReflectionType
 import Ray
-import Object
+import Material
+import Intersectable
+import Intersection
+import Plane
 
-eps :: Double
-eps = 0.0000001
+center :: Object -> Vec3
+center (Sphere c _ _) = c
 
-data Sphere = Sphere Double Vec3 Color Color ReflectionType deriving Show
+radius :: Object -> Double
+radius (Sphere _ r _) = r
 
-sphere :: Double -> Vec3 -> Color -> Color -> ReflectionType -> Sphere
-sphere = Sphere
+maxD :: Double -> Double -> Double
+maxD x y
+  | x <= 0                                = y
+  | True                                  = x
 
-radius :: Sphere -> Double
-radius (Sphere r _ _ _ _) = r
-
-position :: Sphere -> Vec3
-position (Sphere _ p _ _ _) = p
-
-emission :: Sphere -> Color
-emission (Sphere _ _ e _ _) = e
-
-sphereColor :: Sphere -> Color
-sphereColor (Sphere _ _ _ c _) = c
-
-instance Object Sphere where
-  intersect sphere ray
-    | (det >= 0) && (t1 > eps) = t1
-    | (det >= 0) && (t2 > eps) = t2
-    | otherwise  = 0
+instance Intersectable Object where
+  intersect (Sphere sphereCenter sphereRadius material) ray
+    | 0 > d = NO_HIT
+    | 0 < t = Intersection t p n material
+    | True  = NO_HIT
     where
-      o_p = position sphere - org ray
-      b = o_p `dot` dir ray
-      det = b * b - (o_p `dot` o_p) + radius sphere * radius sphere
-      t1 = b - sqrt det
-      t2 = b + sqrt det
+      rayOrigin = org ray
+      rayDir = dir ray
+      v = rayOrigin - sphereCenter
+      b = rayDir `dot` v
+      c = v `dot` v - sphereRadius ** 2
+      d = b * b - c
+      s = sqrt d
+      t = maxD (-b - s) (-b + s)
+      p = rayOrigin + rayDir *| t
+      n = normalize $ p - sphereCenter
+  intersect (Plane n d material) ray
+    | 0 < t = Intersection t (rayOrigin + rayDir *| t) n material
+    | True  = NO_HIT
+    where
+      rayOrigin = org ray
+      rayDir = dir ray
+      v = n `dot` rayDir
+      t = -(n `dot` rayOrigin + d) / v
+

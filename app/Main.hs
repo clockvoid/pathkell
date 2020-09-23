@@ -5,6 +5,14 @@ import Control.Monad
 import Vec
 import Spectrum
 import Numeric.Limits
+import Scene
+import Intersectable
+import Sphere
+import Plane
+import Ray
+import Scene
+import Light
+import Material
 
 height :: Int
 height = 256
@@ -12,75 +20,38 @@ height = 256
 width :: Int
 width = 256
 
+intersectableList :: [Object]
+intersectableList = [
+  Sphere (Vec3 (-2) 0 0) 0.8 (Material (Spectrum 0.9 0.1 0.5)),
+  Sphere (Vec3 0 0 0) 0.8 (Material (Spectrum 0.1 0.9 0.5)),
+  Sphere (Vec3 2 0 0) 0.8 (Material (Spectrum 0.1 0.5 0.9)),
+  plane (Vec3 0 (-0.8) 0) (Vec3 0 1 0) (Material (Spectrum 0.8 0.8 0.8))
+                 ]
+
+lightList :: [Light]
+lightList = [
+  Light (Vec3 100 100 100) (Spectrum 400000 100000 400000),
+  Light (Vec3 (-100) 100 100) (Spectrum 100000 400000 100000)
+            ]
+
+scene :: Scene
+scene = Scene intersectableList lightList
+
 eye :: Vec3
-eye = vec3 0 0 5
+eye = vec3 0 0 7
 
-sphere :: Vec3
-sphere = vec3 0 0 0
-
-diffuseColor :: Spectrum
-diffuseColor = Spectrum 1 0.5 0.25
-
-radius :: Double
-radius = 1
-
-lightPos :: Vec3
-lightPos = vec3 10 10 10
-
-lightPower :: Spectrum
-lightPower = Spectrum 4000 4000 4000
-
-not_hit :: Double
-not_hit = infinity
-
-maxD :: Double -> Double -> Double
-maxD x y
-  | x <= 0                                = y
-  | True                                  = x
-
-calcPrimaryRay :: (Int, Int) -> Vec3
-calcPrimaryRay (x, y) = normalize $ vec3 dx dy dz
+calcPrimaryRay :: (Int, Int) -> Ray
+calcPrimaryRay (x, y) = Ray eye (normalize $ vec3 dx dy dz)
   where
     dx = fromIntegral x + 0.5 - fromIntegral width / 2
     dy = -(fromIntegral y + 0.5 - fromIntegral height / 2)
     dz = -(fromIntegral height)
 
-intersectRaySphere :: Vec3 -> Vec3 -> Vec3 -> Double -> Double
-intersectRaySphere rayOrigin rayDir sphereCenter sphereRadius
-  | 0 > d = not_hit
-  | 0 < t = t
-  | True  = not_hit
-  where
-   v = rayOrigin - sphereCenter
-   b = rayDir `dot` v
-   c = v `dot` v - sphereRadius ** 2
-   d = b * b - c
-   s = sqrt d
-   t = maxD (-b - s) (-b + s)
-
 calcPixelColor :: (Int, Int) -> (Int, Int, Int)
-calcPixelColor dir = 
-  if t == not_hit
-     then (0, 0, 0)
-     else toColor l
+calcPixelColor dir = toColor l
   where
     ray = calcPrimaryRay dir
-    t = intersectRaySphere eye ray sphere radius
-    l = diffuseLighting eye ray sphere t
-
-diffuseLighting :: Vec3 -> Vec3 -> Vec3 -> Double -> Spectrum
-diffuseLighting eye ray sphere t = 
-  if dotNL > 0
-     then lightPower *|| factor * diffuseColor
-     else black
-  where
-    p = eye + (t |* ray)
-    n = normalize $ p - sphere
-    v = lightPos - p
-    l = normalize v
-    dotNL = n `dot` l
-    r = Vec.length v
-    factor = dotNL / (4 * pi * r * r)
+    l = trace scene ray
 
 draw :: [(Int, Int, Int)]
 draw = map calcPixelColor [(x, y) | y <- [0..width - 1], x <- [0..height - 1]]
