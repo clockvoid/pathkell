@@ -1,62 +1,69 @@
 module Main where
 
-import Object
-import Color
+import Text.Printf
+import Control.Monad
 import Vec
-import Sphere
+import Spectrum
+import Numeric.Limits
+import Scene
+import Intersectable
+import Object
 import Ray
-import ReflectionType
-import Camera
+import Scene
+import Light
+import Material
 
-camera1 :: Camera
-camera1 = camera (vec3 0 0 0) (vec3 4 0 0) (vec3 0 2 0) (vec3 (-2) (-1) (-1))
+height :: Int
+height = 1080
 
-screen :: [Vec3]
-screen = [vec3 0 (y / 256) (z / 256) | y <- [0..256], z <- [0..256]]
+width :: Int
+width = 1920
 
-rays :: [Ray]
-rays = map (\(Vec3 x y z) -> getRay y z camera1) screen
+intersectableList :: [Object]
+intersectableList = [
+  Sphere (Vec3 (-2) 0 0) 0.8 (Material (Spectrum 0.9 0.1 0.5)),
+  Sphere (Vec3 0 0 0) 0.8 (Material (Spectrum 0.1 0.9 0.5)),
+  Sphere (Vec3 2 0 0) 0.8 (Material (Spectrum 0.1 0.5 0.9)),
+  Sphere (Vec3 0 2 0) 0.8 (Material (Spectrum 0.2 0.2 0.2)),
+  plane (Vec3 0 (-0.8) 0) (Vec3 0 1 0) (Material (Spectrum 0.8 0.8 0.8))
+                 ]
 
-radius1 :: Double
-radius1 = 10
+lightList :: [Light]
+lightList = [
+  Light (Vec3 100 100 100) (Spectrum 400000 100000 400000),
+  Light (Vec3 (-100) 100 100) (Spectrum 100000 400000 100000),
+  Light (Vec3 100 (-100) 100) (Spectrum 100000 400000 400000)
+            ]
 
-position1 :: Vec3
-position1 = vec3 10 0 0
+scene :: Scene
+scene = Scene intersectableList lightList
 
-emission1 :: Color
-emission1 = color 0 0 0
+eye :: Vec3
+eye = vec3 0 0 7
 
-sphereColor1 :: Color
-sphereColor1 = color 1 1 1
-
-reflectionType1 :: ReflectionType
-reflectionType1 = DIFFUSE
-
-sphere1 :: Sphere
-sphere1 = sphere radius1 position1 emission1 sphereColor1 reflectionType1
-
-ts :: [Double]
-ts = [sphere1 `intersect` ray | ray <- rays]
-
-hitpoints :: [Vec3]
-hitpoints = zipWith hited rays ts
+calcPrimaryRay :: (Int, Int) -> Ray
+calcPrimaryRay (x, y) = Ray eye (normalize $ vec3 dx dy dz)
   where
-    hited ray t = if t == 0 then vec3 0 0 0 else hit ray t
-    hit ray t = org ray + t |* dir ray
+    dx = fromIntegral x + 0.5 - fromIntegral width / 2
+    dy = -(fromIntegral y + 0.5 - fromIntegral height / 2)
+    dz = -(fromIntegral height)
 
-isHit :: [Vec3]
-isHit = map hit ts
+calcPixelColor :: (Int, Int) -> (Int, Int, Int)
+calcPixelColor dir = toColor l
   where
-    hit t = if t == 0 then vec3 0 0 0 else vec3 1 1 1
+    ray = calcPrimaryRay dir
+    l = trace scene ray
 
-transformColor :: Ray -> Color
-transformColor (Ray org dir) = fromVec3 $ normalize $ lerp t (Vec3 0.5 0.7 1) (Vec3 1 1 1)
-  where
-    d = normalize dir 
-    t = 0.5 * (vecY dir + 1)
+draw :: [(Int, Int, Int)]
+draw = map calcPixelColor [(x, y) | y <- [0..height - 1], x <- [0..width - 1]]
 
 main :: IO ()
-main = 
-  print $ map (clampToString . transformColor) rays
-  --print $ map (clampToString . fromVec3) isHit
+main = do
+  putStrLn "P3"
+  putStr $ show width
+  putStr " "
+  putStrLn $ show height
+  putStrLn "255"
+  forM_ draw $ \(r, g, b) -> do
+    printf "%d %d %d\n" r g b
 
