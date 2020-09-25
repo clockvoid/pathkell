@@ -10,6 +10,10 @@ import Material
 import Object
 import Numeric.Limits
 
+import Control.Monad.ST
+import Control.Monad
+import Data.STRef
+
 data Scene = Scene [Object] [Light] deriving Show
 
 intersectables :: Scene -> [Object]
@@ -28,20 +32,44 @@ specularReflection depth scene ks l isect ray = l + c *|| ks * diffuse _material
 diffuseReflection :: [Object] -> [Light] -> Spectrum -> Intersection -> Spectrum
 diffuseReflection objects lights l isect = l + lighting objects lights (p isect) (n isect) (material isect)
 
+intoReflaction :: Int -> Scene -> Double -> Spectrum -> Intersection -> Ray -> Spectrum
+intoReflaction depth scene kt l isect ray = l + c *|| kt * diffuse _material
+  where
+    _material = material isect
+    r = reflact (dir ray) (n isect) (1 / reflactiveIndex _material)
+    c = trace (depth + 1) scene l (Ray (p isect) r)
+
+toOutReflaction :: Int -> Scene -> Spectrum -> Intersection -> Ray -> Spectrum
+toOutReflaction depth scene l isect ray = trace (depth + 1) scene l (Ray (p isect) r)
+  where
+    _material = material isect
+    r = reflact (dir ray) (vmap (* (-1)) (n isect)) (reflactiveIndex _material)
+
+decideL :: Double -> Double -> Double -> Int -> Scene -> Spectrum -> Intersection -> Ray -> Spectrum
+decideL ks kt kd depth scene l isect ray = runST $ do
+  refL <- newSTRef l
+  when (0 < ks) (modifySTRef refL (+ _specular))
+  when (0 < kt) (modifySTRef refL (+ _into))
+  when (0 < kd) (modifySTRef refL (+ _diffuse))
+  readSTRef refL
+  where
+    _specular = specularReflection depth scene ks l isect ray
+    _into = intoReflaction depth scene kt l isect ray
+    _diffuse = diffuseReflection (intersectables scene) (lights scene) l isect
+
 trace :: Int -> Scene -> Spectrum -> Ray -> Spectrum
 trace depth scene l ray
   | depth > 10      = black
   | isect == NO_HIT = black
-  | 0 < ks          = if 0 < kd then _specular + _diffuse else _specular
-  | 0 < kd          = _diffuse
-  | otherwise       = l
+  | isInto          = decideL ks kt kd depth scene l isect ray
+  | otherwise       = toOutReflaction depth scene l isect ray
     where
       isect = findNearestIntersection (intersectables scene) ray
       m = material isect
+      isInto = n isect `dot` dir ray < 0
       ks = reflective m
-      kd = 1 - ks
-      _specular = specularReflection depth scene ks l isect ray
-      _diffuse = diffuseReflection (intersectables scene) (lights scene) l isect
+      kt = reflactive m
+      kd = 1 - ks - kt
 
 compareIntersection :: Intersection -> Intersection -> Intersection
 compareIntersection isect NO_HIT = isect
