@@ -11,9 +11,4 @@ packages:
       sha256: d3217caf46e2ada396d1fcebb7aa023513fa78ff7e517b7032def53dbc912634
   original:
     hackage: numeric-limits-0.1.0.0
-snapshots:
-- completed:
-    size: 499461
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/13/25.yaml
-    sha256: aed98969628e20615e96b06083c933c7e3354ae56b08b75e607a26569225d6c0
-  original: lts-13.25
+snapshots: []
