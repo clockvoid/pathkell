@@ -21,8 +21,8 @@ width = 1920
 
 intersectableList :: [Object]
 intersectableList = [
-  Sphere (Vec3 (-1) 0 0) 1 (Material 0 0.9 1.5 (Spectrum 0.1 0.5 0.9)),
-  Sphere (Vec3 1 0 0) 1 (Material 0.8 0 1 (Spectrum 0.9 0.1 0.5)),
+  Sphere (Vec3 (-1) 0 0) 1 (Material 0 0.9 1.5 (Spectrum 0.1 0.3 0.5)),
+  --Sphere (Vec3 1 0 0) 1 (Material 0.8 0 1 (Spectrum 0.9 0.1 0.5)),
   -- Sphere (Vec3 0 0 (2)) 1 (Material 0.8 0.9 1.8 (Spectrum 0.5 0.9 0.1)),
   -- Sphere (Vec3 (-2) 0 0) 0.8 (Material (Spectrum 0.9 0.1 0.5)),
   -- Sphere (Vec3 0 0 0) 0.8 (Material (Spectrum 0.1 0.9 0.5)),

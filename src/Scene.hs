@@ -62,7 +62,8 @@ trace depth scene l ray
   | depth > 10      = black
   | isect == NO_HIT = black
   | isInto          = decideL ks kt kd depth scene l isect ray
-  | otherwise       = toOutReflaction depth scene l isect ray
+  | not isInto      = toOutReflaction depth scene l isect ray
+  | otherwise       = l
     where
       isect = findNearestIntersection (intersectables scene) ray
       m = material isect
