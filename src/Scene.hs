@@ -39,7 +39,7 @@ lighting objects lights p n m = foldr (\light spectrum -> spectrum + (diffuseLig
 
 diffuseLighting :: [Object] -> Vec3 -> Vec3 -> Spectrum -> Light -> Spectrum
 diffuseLighting objects p n diffuseColor light = 
-  if dotNL > 0 && visible objects p lightPos
+  if (dotNL > 0) && visible objects p lightPos
      then lightPower *|| factor * diffuseColor
      else black
   where
@@ -56,7 +56,7 @@ distance NO_HIT = infinity
 distance isect  = t isect
 
 visible :: [Object] -> Vec3 -> Vec3 -> Bool
-visible objList org target = foldr (\obj _visible -> (distance (intersect obj shadowRay) >= (Vec.length v)) && _visible) True objList
+visible objList org target = foldr (\obj _visible -> ((distance (intersect obj shadowRay)) >= (Vec.length v)) && _visible) True objList
   where
     v = normalize $ target - org
     shadowRay = Ray org v
