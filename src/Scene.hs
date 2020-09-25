@@ -8,6 +8,7 @@ import Intersection
 import Spectrum
 import Material
 import Object
+import Numeric.Limits
 
 data Scene = Scene [Object] [Light] deriving Show
 
@@ -20,7 +21,7 @@ lights (Scene _ lightList) = lightList
 trace :: Scene -> Ray -> Spectrum
 trace scene ray
   | isect == NO_HIT = black
-  | True            = lighting (lights scene) (intersectionP isect) (intersectionN isect) (intersectionMaterial isect)
+  | True            = lighting (intersectables scene)(lights scene) (intersectionP isect) (intersectionN isect) (intersectionMaterial isect)
     where
       isect = findNearestIntersection (intersectables scene) ray
 
@@ -33,12 +34,12 @@ compareIntersection isect1 isect2 = if intersectionT isect1 < intersectionT isec
 findNearestIntersection :: [Object] -> Ray -> Intersection
 findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (intersect isectable ray) isect) NO_HIT isectables 
 
-lighting :: [Light] -> Vec3 -> Vec3 -> Material -> Spectrum
-lighting lights p n m = foldr (\light spectrum -> spectrum + (diffuseLighting p n (diffuse m) light)) black lights
+lighting :: [Object] -> [Light] -> Vec3 -> Vec3 -> Material -> Spectrum
+lighting objects lights p n m = foldr (\light spectrum -> spectrum + (diffuseLighting objects p n (diffuse m) light)) black lights
 
-diffuseLighting :: Vec3 -> Vec3 -> Spectrum -> Light -> Spectrum
-diffuseLighting p n diffuseColor light = 
-  if dotNL > 0
+diffuseLighting :: [Object] -> Vec3 -> Vec3 -> Spectrum -> Light -> Spectrum
+diffuseLighting objects p n diffuseColor light = 
+  if dotNL > 0 && visible objects p lightPos
      then lightPower *|| factor * diffuseColor
      else black
   where
@@ -49,4 +50,14 @@ diffuseLighting p n diffuseColor light =
     dotNL = n `dot` l
     r = Vec.length v
     factor = dotNL / (4 * pi * r * r)
+
+distance :: Intersection -> Double
+distance NO_HIT = infinity
+distance isect  = t isect
+
+visible :: [Object] -> Vec3 -> Vec3 -> Bool
+visible objList org target = foldr (\obj _visible -> (distance (intersect obj shadowRay) >= (Vec.length v)) && _visible) True objList
+  where
+    v = normalize $ target - org
+    shadowRay = Ray org v
 
