@@ -13,17 +13,35 @@ import Numeric.Limits
 data Scene = Scene [Object] [Light] deriving Show
 
 intersectables :: Scene -> [Object]
-intersectables (Scene isect _) = isect
+intersectables (Scene objectList _) = objectList
 
 lights :: Scene -> [Light]
 lights (Scene _ lightList) = lightList
 
-trace :: Scene -> Ray -> Spectrum
-trace scene ray
+specularReflection :: Int -> Scene -> Double -> Spectrum -> Intersection -> Ray -> Spectrum
+specularReflection depth scene ks l isect ray = l + c *|| ks * diffuse _material
+  where
+    _material = material isect
+    r = reflect (dir ray) (n isect)
+    c = trace (depth + 1) scene l (Ray (p isect) r)
+
+diffuseReflection :: [Object] -> [Light] -> Spectrum -> Intersection -> Spectrum
+diffuseReflection objects lights l isect = l + lighting objects lights (p isect) (n isect) (material isect)
+
+trace :: Int -> Scene -> Spectrum -> Ray -> Spectrum
+trace depth scene l ray
+  | depth > 10      = black
   | isect == NO_HIT = black
-  | True            = lighting (intersectables scene)(lights scene) (intersectionP isect) (intersectionN isect) (intersectionMaterial isect)
+  | 0 < ks          = if 0 < kd then _specular + _diffuse else _specular
+  | 0 < kd          = _diffuse
+  | otherwise       = l
     where
       isect = findNearestIntersection (intersectables scene) ray
+      m = material isect
+      ks = reflective m
+      kd = 1 - ks
+      _specular = specularReflection depth scene ks l isect ray
+      _diffuse = diffuseReflection (intersectables scene) (lights scene) l isect
 
 compareIntersection :: Intersection -> Intersection -> Intersection
 compareIntersection isect NO_HIT = isect

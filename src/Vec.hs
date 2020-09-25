@@ -9,6 +9,7 @@ class Vec a where
   lenSquared :: a -> Double
   length :: a -> Double
   normalize :: a -> a
+  reflect :: a -> a -> a
   vmap :: (Double -> Double) -> a -> a
   vpromote :: Double -> a
   lerp :: Double -> a -> a -> a
@@ -32,6 +33,7 @@ instance Vec Vec3 where
   lenSquared (Vec3 x y z) = x * x + y * y + z * z
   length vec = sqrt $ lenSquared vec
   normalize vec = vec /| Vec.length vec
+  reflect self n = self - n *| (2 * self `dot` n)
   vmap f (Vec3 x y z) = Vec3 (f x) (f y) (f z)
   vpromote a = Vec3 a a a
   lerp alpha v1 v2 = ((v2 - v1) *| alpha) + v1
