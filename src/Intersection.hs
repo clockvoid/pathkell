@@ -3,7 +3,12 @@ module Intersection where
 import Vec
 import Material
 
-data Intersection = Intersection Double Vec3 Vec3 Material | NO_HIT deriving (Eq, Show)
+data Intersection = Intersection
+  { t :: Double
+  , p :: Vec3
+  , n :: Vec3
+  , material :: Material
+  } | NO_HIT deriving (Eq, Show)
 
 intersectionT :: Intersection -> Double
 intersectionT (Intersection t _ _ _) = t
