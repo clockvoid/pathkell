@@ -15,7 +15,11 @@ class Vec a where
   vpromote :: Double -> a
   lerp :: Double -> a -> a -> a
 
-data Vec3 = Vec3 Double Double Double deriving (Eq)
+data Vec3 = Vec3
+  { vecX :: Double 
+  , vecY :: Double
+  , vecZ :: Double
+  } deriving (Eq)
 
 instance Num Vec3 where
   (Vec3 x1 y1 z1) + (Vec3 x2 y2 z2) = Vec3 (x1 + x2) (y1 + y2) (z1 + z2)
@@ -49,15 +53,6 @@ instance Vec Vec3 where
 
 vec3 :: Double -> Double -> Double -> Vec3
 vec3 = Vec3
-
-vecX :: Vec3 -> Double
-vecX (Vec3 x _ _) = x
-
-vecY :: Vec3 -> Double
-vecY (Vec3 _ y _) = y
-
-vecZ :: Vec3 -> Double
-vecZ (Vec3 _ _ z) = z
 
 instance Show Vec3 where
   show (Vec3 x y z) = show x ++ " " ++ show y ++ " " ++ show z ++ "\n"
