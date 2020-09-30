@@ -16,13 +16,10 @@ import Control.Monad.ST
 import Control.Monad
 import Data.STRef
 
-data Scene = Scene [Object] [Light] deriving Show
-
-intersectables :: Scene -> [Object]
-intersectables (Scene objectList _) = objectList
-
-lights :: Scene -> [Light]
-lights (Scene _ lightList) = lightList
+data Scene = Scene
+  { intersectables :: [Object]
+  , lights :: [Light]
+  } deriving Show
 
 specularReflection :: Int -> Scene -> Double -> Spectrum -> Intersection -> Ray -> Spectrum
 specularReflection depth scene ks l isect ray = l + c *|| ks * diffuse _material
@@ -81,10 +78,10 @@ compareIntersection NO_HIT NO_HIT = NO_HIT
 compareIntersection isect1 isect2 = if intersectionT isect1 < intersectionT isect2 then isect1 else isect2
 
 findNearestIntersection :: [Object] -> Ray -> Intersection
-findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (intersect isectable ray) isect) NO_HIT isectables 
+findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (isectable `intersect` ray) isect) NO_HIT isectables 
 
 lighting :: [Object] -> [Light] -> Vec3 -> Vec3 -> Material -> Spectrum
-lighting objects lights p n m = foldr (\light spectrum -> spectrum + (diffuseLighting objects p n (diffuse m) light)) black lights
+lighting objects lights p n m = foldr (\light spectrum -> spectrum + diffuseLighting objects p n (diffuse m) light) black lights
 
 diffuseLighting :: [Object] -> Vec3 -> Vec3 -> Spectrum -> Light -> Spectrum
 diffuseLighting objects p n diffuseColor light = 
