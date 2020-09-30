@@ -74,8 +74,10 @@ trace depth scene l ray
 compareIntersection :: Intersection -> Intersection -> Intersection
 compareIntersection isect NO_HIT = isect
 compareIntersection NO_HIT isect = isect
-compareIntersection NO_HIT NO_HIT = NO_HIT
-compareIntersection isect1 isect2 = if intersectionT isect1 < intersectionT isect2 then isect1 else isect2
+compareIntersection isect1 isect2
+  | isect1 == NO_HIT && isect2 == NO_HIT = NO_HIT
+  | intersectionT isect1 < intersectionT isect2 = isect1
+  | otherwise = isect2
 
 findNearestIntersection :: [Object] -> Ray -> Intersection
 findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (isectable `intersect` ray) isect) NO_HIT isectables 
@@ -102,7 +104,7 @@ distance NO_HIT = infinity
 distance isect  = t isect
 
 visible :: [Object] -> Vec3 -> Vec3 -> Bool
-visible objList org target = foldr (\obj _visible -> ((distance (intersect obj shadowRay)) >= (Base.Vec.length v)) && _visible) True objList
+visible objList org target = foldr (\obj _visible -> distance (obj `intersect` shadowRay) >= Base.Vec.length v && _visible) True objList
   where
     v = normalize $ target - org
     shadowRay = Ray org v
