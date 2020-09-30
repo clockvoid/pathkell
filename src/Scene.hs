@@ -1,26 +1,25 @@
 module Scene where
 
+import Base.Ray
+import Base.Vec
+import Base.Spectrum
+
 import Intersectable
 import Light
-import Ray
-import Vec
 import Intersection
-import Spectrum
 import Material
 import Object
+
 import Numeric.Limits
 
 import Control.Monad.ST
 import Control.Monad
 import Data.STRef
 
-data Scene = Scene [Object] [Light] deriving Show
-
-intersectables :: Scene -> [Object]
-intersectables (Scene objectList _) = objectList
-
-lights :: Scene -> [Light]
-lights (Scene _ lightList) = lightList
+data Scene = Scene
+  { intersectables :: [Object]
+  , lights :: [Light]
+  } deriving Show
 
 specularReflection :: Int -> Scene -> Double -> Spectrum -> Intersection -> Ray -> Spectrum
 specularReflection depth scene ks l isect ray = l + c *|| ks * diffuse _material
@@ -75,14 +74,16 @@ trace depth scene l ray
 compareIntersection :: Intersection -> Intersection -> Intersection
 compareIntersection isect NO_HIT = isect
 compareIntersection NO_HIT isect = isect
-compareIntersection NO_HIT NO_HIT = NO_HIT
-compareIntersection isect1 isect2 = if intersectionT isect1 < intersectionT isect2 then isect1 else isect2
+compareIntersection isect1 isect2
+  | isect1 == NO_HIT && isect2 == NO_HIT = NO_HIT
+  | intersectionT isect1 < intersectionT isect2 = isect1
+  | otherwise = isect2
 
 findNearestIntersection :: [Object] -> Ray -> Intersection
-findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (intersect isectable ray) isect) NO_HIT isectables 
+findNearestIntersection isectables ray = foldr (\isectable isect -> compareIntersection (isectable `intersect` ray) isect) NO_HIT isectables 
 
 lighting :: [Object] -> [Light] -> Vec3 -> Vec3 -> Material -> Spectrum
-lighting objects lights p n m = foldr (\light spectrum -> spectrum + (diffuseLighting objects p n (diffuse m) light)) black lights
+lighting objects lights p n m = foldr (\light spectrum -> spectrum + diffuseLighting objects p n (diffuse m) light) black lights
 
 diffuseLighting :: [Object] -> Vec3 -> Vec3 -> Spectrum -> Light -> Spectrum
 diffuseLighting objects p n diffuseColor light = 
@@ -95,7 +96,7 @@ diffuseLighting objects p n diffuseColor light =
     v = lightPos - p
     l = normalize v
     dotNL = n `dot` l
-    r = Vec.length v
+    r = Base.Vec.length v
     factor = dotNL / (4 * pi * r * r)
 
 distance :: Intersection -> Double
@@ -103,7 +104,7 @@ distance NO_HIT = infinity
 distance isect  = t isect
 
 visible :: [Object] -> Vec3 -> Vec3 -> Bool
-visible objList org target = foldr (\obj _visible -> ((distance (intersect obj shadowRay)) >= (Vec.length v)) && _visible) True objList
+visible objList org target = foldr (\obj _visible -> distance (obj `intersect` shadowRay) >= Base.Vec.length v && _visible) True objList
   where
     v = normalize $ target - org
     shadowRay = Ray org v

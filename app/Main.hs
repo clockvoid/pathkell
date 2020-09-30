@@ -2,13 +2,14 @@ module Main where
 
 import Text.Printf
 import Control.Monad
-import Vec
-import Spectrum
 import Numeric.Limits
-import Scene
+
+import Base.Vec
+import Base.Spectrum
+import Base.Ray
+
 import Intersectable
 import Object
-import Ray
 import Scene
 import Light
 import Material
@@ -67,15 +68,14 @@ calcPixelColor dir = toColor l
     l = trace 0 scene black ray
 
 draw :: [(Int, Int, Int)]
-draw = map calcPixelColor [(x, y) | y <- [0..height - 1], x <- [0..width - 1]]
+draw = [calcPixelColor (x, y) | y <- [0..height - 1], x <- [0..width - 1]]
 
 main :: IO ()
 main = do
   putStrLn "P3"
   putStr $ show width
   putStr " "
-  putStrLn $ show height
+  print height
   putStrLn "255"
-  forM_ draw $ \(r, g, b) -> do
-    printf "%d %d %d\n" r g b
+  forM_ draw $ \(r, g, b) -> printf "%d %d %d\n" r g b
 

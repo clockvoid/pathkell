@@ -1,6 +1,6 @@
 module Material where
 
-import Spectrum
+import Base.Spectrum
 
 data Material = Material
   { reflective :: Double
