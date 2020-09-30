@@ -1,4 +1,4 @@
-module Vec where
+module Base.Vec where
 
 class Vec a where
   (/|) :: a -> Double -> a
@@ -33,7 +33,7 @@ instance Vec Vec3 where
   cross (Vec3 x1 y1 z1) (Vec3 x2 y2 z2) = Vec3 ((y1 * z2) - (z1 * y2)) ((z1 * x2) - (x1 * z2)) ((x1 * y2) - (y1 * x2))
   lenSquared (Vec3 x y z) = x * x + y * y + z * z
   length vec = sqrt $ lenSquared vec
-  normalize vec = vec /| Vec.length vec
+  normalize vec = vec /| Base.Vec.length vec
   reflect self n = self - n *| (2 * self `dot` n)
   reflact self n eta
     | 0 < d     = a - b
@@ -67,3 +67,4 @@ radians deg = deg / 180 * pi
 
 degrees :: Double -> Double
 degrees rad = rad / pi * 180
+

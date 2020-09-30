@@ -1,13 +1,15 @@
 module Scene where
 
+import Base.Ray
+import Base.Vec
+import Base.Spectrum
+
 import Intersectable
 import Light
-import Ray
-import Vec
 import Intersection
-import Spectrum
 import Material
 import Object
+
 import Numeric.Limits
 
 import Control.Monad.ST
@@ -95,7 +97,7 @@ diffuseLighting objects p n diffuseColor light =
     v = lightPos - p
     l = normalize v
     dotNL = n `dot` l
-    r = Vec.length v
+    r = Base.Vec.length v
     factor = dotNL / (4 * pi * r * r)
 
 distance :: Intersection -> Double
@@ -103,7 +105,7 @@ distance NO_HIT = infinity
 distance isect  = t isect
 
 visible :: [Object] -> Vec3 -> Vec3 -> Bool
-visible objList org target = foldr (\obj _visible -> ((distance (intersect obj shadowRay)) >= (Vec.length v)) && _visible) True objList
+visible objList org target = foldr (\obj _visible -> ((distance (intersect obj shadowRay)) >= (Base.Vec.length v)) && _visible) True objList
   where
     v = normalize $ target - org
     shadowRay = Ray org v

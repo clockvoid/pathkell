@@ -1,7 +1,7 @@
 module VecSpec (spec) where
 
 import Test.Hspec
-import Vec
+import Base.Vec
 
 vec1 :: Vec3
 vec1 = vec3 1 1 1
@@ -50,3 +50,4 @@ spec = do
   describe "vec" $
     it "大きさ" $
       (Vec.length vec1) `shouldBe` (sqrt 3)
+

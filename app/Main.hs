@@ -2,13 +2,14 @@ module Main where
 
 import Text.Printf
 import Control.Monad
-import Vec
-import Spectrum
 import Numeric.Limits
-import Scene
+
+import Base.Vec
+import Base.Spectrum
+import Base.Ray
+
 import Intersectable
 import Object
-import Ray
 import Scene
 import Light
 import Material

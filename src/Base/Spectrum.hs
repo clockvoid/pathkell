@@ -1,4 +1,4 @@
-module Spectrum where
+module Base.Spectrum where
 
 data Spectrum = Spectrum Double Double Double deriving (Eq, Show)
 

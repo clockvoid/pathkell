@@ -1,9 +1,9 @@
 module Intersectable where
 
-import Intersection
-import Ray
+import Base.Ray
+import Base.Vec
 import Material
-import Vec
+import Intersection
 
 class Intersectable a where
   intersect :: a -> Ray -> Intersection

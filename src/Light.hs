@@ -1,7 +1,7 @@
 module Light where
 
-import Vec
-import Spectrum
+import Base.Vec
+import Base.Spectrum
 
 data Light = Light Vec3 Spectrum deriving (Eq, Show)
 

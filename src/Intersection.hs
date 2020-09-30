@@ -1,6 +1,6 @@
 module Intersection where
 
-import Vec
+import Base.Vec
 import Material
 
 data Intersection = Intersection

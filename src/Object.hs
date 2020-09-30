@@ -1,7 +1,8 @@
 module Object where
 
-import Vec
-import Ray
+import Base.Vec
+import Base.Ray
+
 import Material
 import Intersectable
 import Intersection
