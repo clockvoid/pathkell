@@ -11,14 +11,14 @@ data Intersection = Intersection
   } | NO_HIT deriving (Eq, Show)
 
 intersectionT :: Intersection -> Double
-intersectionT (Intersection t _ _ _) = t
+intersectionT = t
 
 intersectionP :: Intersection -> Vec3
-intersectionP (Intersection _ p _ _) = p
+intersectionP = p
 
 intersectionN :: Intersection -> Vec3
-intersectionN (Intersection _ _ n _) = n
+intersectionN = n
 
 intersectionMaterial :: Intersection -> Material
-intersectionMaterial (Intersection _ _ _ m) = m
+intersectionMaterial = material
 
