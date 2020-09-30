@@ -1,8 +1,8 @@
 module RaySpec (spec) where
 
 import Test.Hspec
-import Ray
-import Vec
+import Base.Ray
+import Base.Vec
 
 ray1 :: Ray
 ray1 = Ray (vec3 1 1 1) (vec3 2 2 2)
