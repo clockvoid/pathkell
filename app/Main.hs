@@ -57,18 +57,26 @@ eye = vec3 0 0 7
 calcPrimaryRay :: (Int, Int) -> Ray
 calcPrimaryRay (x, y) = Ray eye (normalize $ vec3 dx dy dz)
   where
-    dx = fromIntegral x + 0.5 - fromIntegral width / 2
-    dy = -(fromIntegral y + 0.5 - fromIntegral height / 2)
+    r1 = random01 $ x * width + y + 1
+    r2 = random01 $ x * width + y + 2
+    dx = fromIntegral x + r1 - fromIntegral width / 2
+    dy = -(fromIntegral y + r2 - fromIntegral height / 2)
     dz = -(fromIntegral height)
 
-calcPixelColor :: (Int, Int) -> (Int, Int, Int)
-calcPixelColor dir = toColor l
+calcPixelColor :: Int -> (Int, Int) -> Spectrum
+calcPixelColor depth dir
+  | depth < 100 = l + d
+  | otherwise = d
   where
     ray = calcPrimaryRay dir
+    d = calcPixelColor (depth + 1) dir
     l = trace 0 scene black ray
 
 draw :: [(Int, Int, Int)]
-draw = [calcPixelColor (x, y) | y <- [0..height - 1], x <- [0..width - 1]]
+draw = [toColor (calcPixelColor 0 (x, y) *|| (1 / 100)) | y <- [0..height - 1], x <- [0..width - 1]]
+
+random01 :: Int -> Double
+random01 seed = last $ take seed $ randomRs (0, 1) $ mkStdGen 7
 
 main :: IO ()
 main = do
