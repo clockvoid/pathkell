@@ -37,6 +37,7 @@ executables:
     dependencies:
     - pathkell
     - numeric-limits
+    - random
 
 tests:
   pathkell-test:

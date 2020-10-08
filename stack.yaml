@@ -15,3 +15,4 @@ ghc-options:
   "$everything": -O3 -fllvm
 extra-deps:
   - numeric-limits-0.1.0.0
+  - random-1.1
