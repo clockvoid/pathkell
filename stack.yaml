@@ -12,6 +12,6 @@ ghc-options:
   # Use llvm as GHC backend
   # If you are using mac, you can setup llvm with this: https://mizunashi-mana.github.io/blog/posts/2019/05/ghc-with-llvm/
   # note: ghc-8.8.3 uses llvm 7
-  "$everything": -O3 -fllvm
+  "$everything": -O3
 extra-deps:
   - numeric-limits-0.1.0.0
