@@ -39,6 +39,9 @@ executables:
     - numeric-limits
 
 tests:
+  spec:
+    defaults: hspec/hspec@master
+    dependencies: pathkell
   pathkell-test:
     main:                Spec.hs
     source-dirs:         test
