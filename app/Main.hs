@@ -1,18 +1,18 @@
 module Main where
 
-import Text.Printf
-import Control.Monad
-import Numeric.Limits
+import           Control.Monad
+import           Numeric.Limits
+import           Text.Printf
 
-import Base.Vec
-import Base.Spectrum
-import Base.Ray
+import           Base.Ray
+import           Base.Spectrum
+import           Base.Vec
 
-import Intersectable
-import Object
-import Scene
-import Light
-import Material
+import           Intersectable
+import           Light
+import           Material
+import           Object
+import           Scene
 
 height :: Int
 height = 1080
