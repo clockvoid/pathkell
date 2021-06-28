@@ -11,4 +11,23 @@ packages:
       sha256: d3217caf46e2ada396d1fcebb7aa023513fa78ff7e517b7032def53dbc912634
   original:
     hackage: numeric-limits-0.1.0.0
-snapshots: []
+- completed:
+    hackage: hspec-2.7.2@sha256:4758e1af9cf534429cde9f5f6495e5922ad1c05ca5b8344a0a459d320cd1cd28,1692
+    pantry-tree:
+      size: 532
+      sha256: 22da11417d55fe0ae15e8a4fe6e9d4874bb71c11ad5b436bcf48b1f3c9e66664
+  original:
+    hackage: hspec-2.7.2
+- completed:
+    hackage: hspec-discover-2.7.2@sha256:9b21f4211c0553f2f50e50b2231dbdc89e37acb0fbb60b91b890cc2ec81e7bf7,2166
+    pantry-tree:
+      size: 1080
+      sha256: 495d352c7aa81ca9e387a03418f9f0a229c74d97f3b91fc6b16e30e1ba12c239
+  original:
+    hackage: hspec-discover-2.7.2
+snapshots:
+- completed:
+    size: 532381
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/11.yaml
+    sha256: 1f43c4ad661a114a4f9dd4580988f30da1208d844c097714f5867c52a02e0aa1
+  original: lts-16.11
