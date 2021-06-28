@@ -1,8 +1,11 @@
 cradle:
   stack:
-    - path: ./test
-      component: "pathkell:test:pathkell-test"
-    - path: ./src
+    - path: "./src"
       component: "pathkell:lib"
-    - path: ./app/Main.hs
+    - path: "./app"
       component: "pathkell:exe:pathkell-exe"
+    - path: "./test"
+      component: "pathkell:test:pathkell-test"
+
+dependencies:
+  - package.yaml
