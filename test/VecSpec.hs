@@ -1,7 +1,7 @@
 module VecSpec (spec) where
 
-import Test.Hspec
-import Base.Vec
+import           Base.Vec
+import           Test.Hspec
 
 vec1 :: Vec3
 vec1 = vec3 1 1 1
@@ -34,7 +34,7 @@ spec = do
   describe "vec" $
     it "右からの縮小" $
       (vec2 /| 2) `shouldBe` vec3 1 1 1
-  
+
   describe "vec" $
     it "ドット積" $
       (vec1 `dot` vec2) `shouldBe` 6
@@ -49,5 +49,5 @@ spec = do
 
   describe "vec" $
     it "大きさ" $
-      (Vec.length vec1) `shouldBe` (sqrt 3)
+      (Base.Vec.length vec1) `shouldBe` (sqrt 3)
 
