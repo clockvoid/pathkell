@@ -25,9 +25,9 @@ spec = do
 
   describe "ray" $
     it "org" $
-      org ray1 `shouldBe` vec3 1 1 1
+      org ray1 `shouldBe` vec3 1.002 1.002 1.002
 
   describe "ray" $
     it "dir" $
-      dir ray1 `shouldBe` nomalize $ vec3 2 2 2
+      dir ray1 `shouldBe` (normalize (vec3 2 2 2))
 
